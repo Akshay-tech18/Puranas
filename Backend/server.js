@@ -2,15 +2,21 @@ require('dotenv').config()
 
 const express = require('express');
 const cors = require('cors');
+const connectToDB = require('./config/db');
 
+connectToDB(); // this establishes the connection to database that mongoDB
 
-const app = express();
+const app = express(); //this is used to create application instance (or) object 
 
 //middleware
-app.use((req,res,next) => {
-    console.log(req.path, req.method);
-    next();
-})
+// app.use((req,res,next) => {
+//     console.log(req.path, req.method);
+//     next();
+// })
+app.use(cors());
+app.use(express.json())
+
+app.use('/api/auth', require('./routes/authRoutes'))
 
 //routes
 app.get('/', (req,res) => {
