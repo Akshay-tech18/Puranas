@@ -226,4 +226,65 @@ const leaveFamily = async (req, res, next) => {
     }
 };
 
-//update family group.............
+//update family group 
+// put/api/family/:id
+
+const updateFamily = async(req, res, next) => {
+    try {
+        const {name} = req.body;
+        const familyGroup = await FamilyGroup.findById(req.params.id);
+
+        if(!familyGroup) {
+            return res.status(404).json({message: 'Family group not found'});
+        }
+
+        if(familyGroup.creatorId.toString() !== req.user._id.toString()) {
+            return res.status(403).json({message: 'Only the creator can update the family group '});
+        }
+
+        await familyGroup.save();
+
+        res.json(familyGroup);
+    }catch(error) {
+        next(error);
+    }
+};
+
+// delet family group
+// delete /api/family/:id
+const deleteFamily = async(req, res, next) => {
+    try{
+        const familyGroup = await FamilyGroup.findById(req.params.id);
+
+        if(!familyGroup) {
+            return res.status(404).json({message : 'Family group not found'});
+        }
+
+        if(familyGroup.creator.Id.toString() !== req.user._id.toString()){
+            return res.status(403).json({message: 'only the creator can delete the family group'});
+        }
+
+        await User.updateMany(
+            {familyGroups: familyGroup._id},
+            {$pull: {familyGroups: familyGroup._id}}
+        );
+
+        await familyGroup.deleteOne();
+
+        re.json({message: 'Family group deleted successfully'});
+    }catch(error){
+        next(error);
+    }
+};
+
+module.exports = {
+    createFamily,
+    joinFamily,
+    getFamilyGroup,
+    getUserFamilies,
+    getFamilyMembers,
+    removeMember,
+    leaveFamily,
+    updateFamily,
+    deleteFamily,
+};

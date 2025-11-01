@@ -46,7 +46,7 @@ const entrySchema = new mongoose.Schema({
         default: 'personal',
     },
     familyGroupId:{
-        type: mongoose.Schema.Types,ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'FamilyGroup',
     },
     category: {
