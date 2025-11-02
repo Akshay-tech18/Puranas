@@ -23,7 +23,7 @@ const createEntry = async (req, res, next) => {
 };
 
 // for getting the entries (all)
-// GET api/entires
+// GET api/entires?mode=personal|family|community
 const getEntries = async (req, res, next) => {
     try {
         const { mode, familyGroupId} = req.query;
@@ -112,11 +112,11 @@ const deleteEntry = async (req, res, next) => {
         }
 
         if(entry.userId.toString() !== req.user._id.toString()){
-            return req.status(404).json({message: 'Not authorized to delete'});
+            return res.status(404).json({message: 'Not authorized to delete'});
         }
 
         await entry.deleteOne();
-        req.json({message: 'Entry Deleted Successfully'});
+        res.json({message: 'Entry Deleted Successfully'});
     } catch(error){
         next(error);
     }

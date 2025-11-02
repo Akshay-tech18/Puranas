@@ -5,7 +5,13 @@ const generateToken = require('../utils/generateToken');
 // POST/api/auth/signup
 const signup = async (req,res,next) => {
     try{
-        const {name, email, password} = req.body;
+        const {name, email, password, culturalIntrest, religion, caste} = req.body;
+
+        if(!name || !email || !password || !culturalIntrest || !religion){
+            return res.status(400).json({
+                message: 'Please provide all required fields'
+            });
+        }
 
         //checking if the user exists 
         const userExists = await User.findOne({ email });
@@ -18,6 +24,9 @@ const signup = async (req,res,next) => {
             name,
             email,
             password,
+            culturalIntrest,
+            religion,
+            caste,
         });
 
         if(user) {
@@ -25,6 +34,9 @@ const signup = async (req,res,next) => {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
+                culturalIntrest: user.culturalIntrest,
+                religion: user.religion,
+                caste: user.caste,
                 token: generateToken(user._id),
             });
         }
@@ -38,6 +50,13 @@ const signup = async (req,res,next) => {
 const login = async (req, res, next) => {
     try {
         const {email, password} = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({
+                message: 'Please provide email and password'
+            });
+        }
+
 
         const user = await User.findOne({email}).select('+password');
 

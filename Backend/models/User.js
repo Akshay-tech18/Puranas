@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        requried: [true, 'Please add a email'],
+        required: [true, 'Please add a email'],
         unique: true,
         lowercase: true,
         match: [/^\S+@\S+\.\S+$/, 'Please add a valid email'],
@@ -19,6 +19,21 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Please add a password'],
         minlength: 6,
         select: false,
+    },
+    culturalIntrest: {
+        type: String,
+        required: [true, 'Please add cultural Interest'],
+        trim: true,
+    },
+    religion: {
+        type: String,
+        required: [true, 'Please add religion'],
+        trim: true,
+    },
+    caste: {
+        type: String,
+        trim: true,
+        default: null,
     },
     profilePicture: {
         type: String,

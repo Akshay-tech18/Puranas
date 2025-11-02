@@ -36,7 +36,7 @@ const entrySchema = new mongoose.Schema({
         videos: [String],
         audio: [String],
     },
-    tages: [{
+    tags: [{
         type: String,
         lowercase: true,
     }],
