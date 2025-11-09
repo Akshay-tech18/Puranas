@@ -27,6 +27,6 @@ router.route('/:id')
     .put(protect, updateEntry)
     .delete(protect, deleteEntry);
 
-router.post('/:id//comment', protect, addComment);
+router.post('/:id/comment', protect, addComment);
 
 module.exports = router;
