@@ -5,7 +5,7 @@ const {
     updateUserProfile,
     changePassword,
     deleteUser,
-    getUserStats
+    //getUserStats
 } = require('../controllers/userController');
 const {protect} = require('../middleware/authMiddleware');
 
@@ -16,6 +16,6 @@ router.get('/:id',protect, getUserProfile);
 router.put('/:id',protect, updateUserProfile);
 router.put('/:id/password',protect, changePassword);
 router.delete('/:id',protect,deleteUser);
-router.get('/:id/stats', protect, getUserStats);
+//router.get('/:id/stats', protect, getUserStats);
 
 module.exports = router;

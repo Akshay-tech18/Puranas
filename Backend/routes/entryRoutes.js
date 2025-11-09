@@ -8,11 +8,18 @@ const {
     addComment,
 } = require('../controllers/entryController');
 const {protect} = require('../middleware/authMiddleware');
+const upload = require('../middleware/uploadMiddleware');
+
 
 const router = express.Router();
+const uploadFields = upload.fields([
+  { name: 'images', maxCount: 5 },
+  { name: 'audio', maxCount: 3 },
+  { name: 'videos', maxCount: 2 },
+]);
 
 router.route('/')
-    .post(protect, createEntry)
+    .post(protect, uploadFields, createEntry)
     .get(protect, getEntries);
 
 router.route('/:id')

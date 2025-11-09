@@ -4,7 +4,25 @@ const Entry = require('../models/Entry');
 //POST api/entries
 const createEntry = async (req, res, next) => {
     try {
-        const { title, content, tags, mode, familyGroupId, media} = req.body;
+        // const { title, content, tags, mode, familyGroupId, media} = req.body;
+        const { title, content, tags, mode, familyGroupId} = req.body;
+        const media = {
+            images: [],
+            audio: [],
+            videos: [],
+        };
+
+        if (req.files) {
+            if (req.files.images) {
+                media.images = req.files.images.map((f) => `/uploads/images/${f.filename}`);
+            }
+            if (req.files.audio) {
+                media.audio = req.files.audio.map((f) => `/uploads/audio/${f.filename}`);
+            }
+            if (req.files.videos) {
+                media.videos = req.files.videos.map((f) => `/uploads/videos/${f.filename}`);
+            }
+        }
 
         const entry = await Entry.create({
             userId: req.user._id,
@@ -61,8 +79,8 @@ const getEntries = async (req, res, next) => {
 const getEntry = async (req, res, next) => {
     try{
         const entry = await Entry.findById(req.params.id)
-        .populate('userId', 'name profilePicture')
-        .populate('comments.userId', 'name profilePicture');
+            .populate('userId', 'name profilePicture')
+            .populate('comments.userId', 'name profilePicture');
 
         if(!entry) {
             return res.status(404).json({ message : 'Entry not found'});
@@ -133,9 +151,9 @@ const addComment = async (req, res, next) => {
             return res.status(404).json({message : 'Entry not found'});
         }
 
-        if(entry.mode === 'family'){
-            // yet add the logic
-        }
+        // if(entry.mode === 'family'){
+        //     // yet add the logic
+        // }
 
         entry.comments.push({
             userId: req.user._id,

@@ -24,6 +24,8 @@ const createFamily = async(req, res, next) => {
         }
 
         const familyGroup = await FamilyGroup.create({
+            name,
+            inviteCode,
             creatorId: req.user._id,
             members: [req.user._id],
         });
@@ -136,28 +138,28 @@ const getUserFamilies = async (req, res, next) => {
 //get family members
 // get/api/family/:id/members
 
-const getFamilyMembers = async(req, res, next) => {
-    try{
-        const familyGroup = await FamilyGroup.findById(req.params.id)
-            .populate('members', 'name email profilePicture createdAt');
+// const getFamilyMembers = async(req, res, next) => {
+//     try{
+//         const familyGroup = await FamilyGroup.findById(req.params.id)
+//             .populate('members', 'name email profilePicture createdAt');
 
-            if(!familyGroup){
-                return res.status(404).json({message: 'Family group not found'});
-            }
+//             if(!familyGroup){
+//                 return res.status(404).json({message: 'Family group not found'});
+//             }
 
-            const isMember = familyGroup.members.some(
-                member => member._id.toString() === req.user._id.toString()
-            );
+//             const isMember = familyGroup.members.some(
+//                 member => member._id.toString() === req.user._id.toString()
+//             );
 
-            if(!isMember){
-                return res.status(403).json({message: 'Access denied'});
-            }
+//             if(!isMember){
+//                 return res.status(403).json({message: 'Access denied'});
+//             }
 
-            res.json(familyGroup.members);
-    }catch (error){
-        next(error);
-    }
-};
+//             res.json(familyGroup.members);
+//     }catch (error){
+//         next(error);
+//     }
+// };
 
 //remove member from family group
 // delete /api/family/:id/member/:userId
@@ -229,26 +231,26 @@ const leaveFamily = async (req, res, next) => {
 //update family group 
 // put/api/family/:id
 
-const updateFamily = async(req, res, next) => {
-    try {
-        const {name} = req.body;
-        const familyGroup = await FamilyGroup.findById(req.params.id);
+// const updateFamily = async(req, res, next) => {
+//     try {
+//         const {name} = req.body;
+//         const familyGroup = await FamilyGroup.findById(req.params.id);
 
-        if(!familyGroup) {
-            return res.status(404).json({message: 'Family group not found'});
-        }
+//         if(!familyGroup) {
+//             return res.status(404).json({message: 'Family group not found'});
+//         }
 
-        if(familyGroup.creatorId.toString() !== req.user._id.toString()) {
-            return res.status(403).json({message: 'Only the creator can update the family group '});
-        }
+//         if(familyGroup.creatorId.toString() !== req.user._id.toString()) {
+//             return res.status(403).json({message: 'Only the creator can update the family group '});
+//         }
 
-        await familyGroup.save();
+//         await familyGroup.save();
 
-        res.json(familyGroup);
-    }catch(error) {
-        next(error);
-    }
-};
+//         res.json(familyGroup);
+//     }catch(error) {
+//         next(error);
+//     }
+// };
 
 // delet family group
 // delete /api/family/:id
@@ -282,9 +284,9 @@ module.exports = {
     joinFamily,
     getFamilyGroup,
     getUserFamilies,
-    getFamilyMembers,
+    //getFamilyMembers,
     removeMember,
     leaveFamily,
-    updateFamily,
+    //updateFamily,
     deleteFamily,
 };

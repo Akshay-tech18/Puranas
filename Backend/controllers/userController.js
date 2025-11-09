@@ -158,61 +158,61 @@ const deleteUser = async (req, res, next) => {
 // get user statistice
 //. get /api/users/:id/stats
 
-const getUserStats = async (req, res, next) => {
-    try {
-        const userId = req.params.id;
+// const getUserStats = async (req, res, next) => {
+//     try {
+//         const userId = req.params.id;
 
-        if(userId !== req.user._id.toString()) {
-            return res.status(403).json({message: 'Access denied'});
-        }
+//         if(userId !== req.user._id.toString()) {
+//             return res.status(403).json({message: 'Access denied'});
+//         }
 
-        const Entry = require('../models/Entry');
+//         const Entry = require('../models/Entry');
 
-        const entryCounts = await Entry.aggregate([
-            {$match: {userId: req.user._id}},
-            {$group: {_id: '$mode', count: {$sum: 1}}},
-        ]);
+//         const entryCounts = await Entry.aggregate([
+//             {$match: {userId: req.user._id}},
+//             {$group: {_id: '$mode', count: {$sum: 1}}},
+//         ]);
 
-        const categoryCounts = await Entry.aggregate([
-            {$match: {userId: req.user._id}},
-            { $group:{_id: '$category', count: {$sum: 1}}},
-        ]);
+//         const categoryCounts = await Entry.aggregate([
+//             {$match: {userId: req.user._id}},
+//             { $group:{_id: '$category', count: {$sum: 1}}},
+//         ]);
 
-        const totalEntries = await Entry.conutDocuments({userId: req.user._id});
+//         const totalEntries = await Entry.conutDocuments({userId: req.user._id});
 
-        const mediaStats = await Entry.aggregate([
-            {$match: { userId: req.user._id}},
-            {
-                $project: {
-                    imageCount : {$size: {$ifNull: ['$media.images',[]]}},
-                    videoCount : {$size: {$ifNull: ['$media.videos',[]]}},
-                    audioCount : {$size: {$ifNull: ['$media.audio',[]]}},
-                },
-            },
-            {
-                $group: {
-                    _id: null,
-                    totalImages: {$sum: '$imageCount'},
-                    totalVideos: {$sum: '$videoCount'},
-                    totalAudios: {$sum: '$audioCount'},
-                },
-            },
-        ]);
+//         const mediaStats = await Entry.aggregate([
+//             {$match: { userId: req.user._id}},
+//             {
+//                 $project: {
+//                     imageCount : {$size: {$ifNull: ['$media.images',[]]}},
+//                     videoCount : {$size: {$ifNull: ['$media.videos',[]]}},
+//                     audioCount : {$size: {$ifNull: ['$media.audio',[]]}},
+//                 },
+//             },
+//             {
+//                 $group: {
+//                     _id: null,
+//                     totalImages: {$sum: '$imageCount'},
+//                     totalVideos: {$sum: '$videoCount'},
+//                     totalAudios: {$sum: '$audioCount'},
+//                 },
+//             },
+//         ]);
 
-        const user = await User.findById(req.user._id);
-        const familyGroupsCount = user.familyGroups.length;
+//         const user = await User.findById(req.user._id);
+//         const familyGroupsCount = user.familyGroups.length;
 
-        res.json({
-            totalEntries,
-            entriesByMode: entryCounts,
-            entriesByCategory: categoryCounts,
-            media: mediaStats[0] || {totalImages: 0, totalVideos: 0, totalAudio: 0},
-            familyGroups: familyGroupsCount,
-        });
-    }catch (error){
-        next(error);
-    }
-};
+//         res.json({
+//             totalEntries,
+//             entriesByMode: entryCounts,
+//             entriesByCategory: categoryCounts,
+//             media: mediaStats[0] || {totalImages: 0, totalVideos: 0, totalAudio: 0},
+//             familyGroups: familyGroupsCount,
+//         });
+//     }catch (error){
+//         next(error);
+//     }
+// };
 
 module.exports = {
     getUserProfile,
@@ -220,5 +220,5 @@ module.exports = {
     updateUserProfile,
     changePassword,
     deleteUser,
-    getUserStats,
+    //getUserStats,
 };
