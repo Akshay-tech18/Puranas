@@ -114,6 +114,7 @@ const updateEntry = async (req, res, next) => {
             new: true,
             runValidators: true,
         });
+        return res.json(entry);
     }catch (error){
         next(error);
     }
