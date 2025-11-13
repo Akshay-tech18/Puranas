@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
         minlength: 6,
         select: false,
     },
-    culturalIntrest: {
+    culturalInterest: {
         type: String,
         required: [true, 'Please add cultural Interest'],
         trim: true,

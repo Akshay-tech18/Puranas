@@ -30,7 +30,7 @@ const createFamily = async(req, res, next) => {
             members: [req.user._id],
         });
 
-        await UserfindByIdAndUpdate(req.user._id, {
+        await User.findByIdAndUpdate(req.user._id, {
             $push: {familyGroups: familyGroup._id},
         });
 
@@ -65,7 +65,7 @@ const joinFamily = async (req, res, next) => {
             return res.status(404).json({message : 'Invalid invite code'});
         }
 
-        if(familyGroup.members.include(req.user._id)) {
+        if(familyGroup.members.includes(req.user._id)) {
             return res.status(404).json({message: 'you are already a member of this family'});
         }
 
@@ -103,7 +103,7 @@ const getFamilyGroup = async (req, res, next) => {
             }
 
             const isMember = familyGroup.members.some(
-                member => member._id.toString() === req,user._id.toString()
+                member => member._id.toString() === req.user._id.toString()
             );
 
             if(!isMember) {
@@ -167,6 +167,9 @@ const getUserFamilies = async (req, res, next) => {
 const removeMember = async (req, res, next) => {
     try{
         const { id, userId} = req.params;
+
+        const familyGroup = await FamilyGroup.findById(id);
+
 
         if(!familyGroup){
             return res.status(404).json({message: 'Family group not found'});
@@ -262,7 +265,7 @@ const deleteFamily = async(req, res, next) => {
             return res.status(404).json({message : 'Family group not found'});
         }
 
-        if(familyGroup.creator.Id.toString() !== req.user._id.toString()){
+        if(familyGroup.creatorId.toString() !== req.user._id.toString()){
             return res.status(403).json({message: 'only the creator can delete the family group'});
         }
 
@@ -273,7 +276,7 @@ const deleteFamily = async(req, res, next) => {
 
         await familyGroup.deleteOne();
 
-        re.json({message: 'Family group deleted successfully'});
+        res.json({message: 'Family group deleted successfully'});
     }catch(error){
         next(error);
     }

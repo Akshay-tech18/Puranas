@@ -48,18 +48,41 @@ const getEntries = async (req, res, next) => {
 
         let query = {};
 
-        if(mode === 'personal') {
-            query = {userId: req.user._id, mode: 'personal'};
-        }else if (mode === 'family' && familyGroupId) {
-            query = {familyGroupId, mode: 'family'};
-        }else if (mode === 'community') {
-            query = {mode: 'community'};
-        }else {
+        // if(mode === 'personal') {
+        //     query = {userId: req.user._id, mode: 'personal'};
+        // }else if (mode === 'family' && familyGroupId) {
+        //     query = {familyGroupId, mode: 'family'};
+        // }else if (mode === 'community') {
+        //     query = {mode: 'community'};
+        // }else {
+        //     query = {
+        //         $or: [
+        //             {userId: req.user._id},
+        //             {mode: 'community'},
+        //             {mode: 'family', familyGroupId: { $in: req.user.familyGroups}},
+        //         ],
+        //     };
+        // }
+
+        if (mode === 'personal') {
+            query = { userId: req.user._id, mode: 'personal' };
+        } else if (mode === 'family') {
+                if (familyGroupId) {
+                    query = { mode: 'family', familyGroupId };
+                } else {
+                    query = { 
+                    mode: 'family', 
+                    familyGroupId: { $in: req.user.familyGroups } 
+                };
+            }
+        } else if (mode === 'community') {
+            query = { mode: 'community' };
+        } else {
             query = {
-                $or: [
-                    {userId: req.user._id},
-                    {mode: 'community'},
-                    {mode: 'family', familyGroupId: { $in: req.user.familyGroups}},
+            $or: [
+                { userId: req.user._id },
+                { mode: 'community' },
+                { mode: 'family', familyGroupId: { $in: req.user.familyGroups } },
                 ],
             };
         }

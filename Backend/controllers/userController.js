@@ -41,7 +41,7 @@ const updateUserProfile  = async(req, res, next) => {
             return res.status(403).json({message: 'Not authorized to update this profile'});
         }
 
-        const { name, email, profilePicture,culturalIntrest, religion, caste} = req.body;
+        const { name, email, profilePicture,culturalInterest, religion, caste} = req.body;
 
         const user = await User.findById(req.params.id);
 
@@ -59,7 +59,7 @@ const updateUserProfile  = async(req, res, next) => {
 
         if(name) user.name = name;
         if(profilePicture) user.profilePicture = profilePicture;
-        if(culturalIntrest) user.culturalIntrest = culturalIntrest;
+        if(culturalInterest) user.culturalInterest = culturalInterest;
         if(religion) user.religion = religion;
         if(caste !== undefined) user.caste = caste;
 
@@ -70,7 +70,7 @@ const updateUserProfile  = async(req, res, next) => {
             name: user.name,
             email: user.email,
             profilePicture: user.profilePicture,
-            culturalIntrest: user.culturalIntrest,
+            culturalInterest: user.culturalInterest,
             religion: user.religion,
             caste: user.caste,
         });

@@ -5,9 +5,9 @@ const generateToken = require('../utils/generateToken');
 // POST/api/auth/signup
 const signup = async (req,res,next) => {
     try{
-        const {name, email, password, culturalIntrest, religion, caste} = req.body;
+        const {name, email, password, culturalInterest, religion, caste} = req.body;
 
-        if(!name || !email || !password || !culturalIntrest || !religion){
+        if(!name || !email || !password || !culturalInterest || !religion){
             return res.status(400).json({
                 message: 'Please provide all required fields'
             });
@@ -24,23 +24,28 @@ const signup = async (req,res,next) => {
             name,
             email,
             password,
-            culturalIntrest,
+            culturalInterest,
             religion,
             caste,
         });
+
+        console.log("request recived");
 
         if(user) {
             res.status(201).json({
                 _id: user._id,
                 name: user.name,
                 email: user.email,
-                culturalIntrest: user.culturalIntrest,
+                culturalInterest: user.culturalInterest,
                 religion: user.religion,
                 caste: user.caste,
                 token: generateToken(user._id),
             });
         }
+        console.log("Profile created succesfully");
     } catch(error){
+         console.error("🔥 Signup Error:", error);
+         res.status(500).json({ message: error.message || "Server error" });
         next(error);
     }
 };
@@ -67,11 +72,13 @@ const login = async (req, res, next) => {
                 email: user.email,
                 token: generateToken(user._id),
             });
+            console.log("logged in succesfully");
         }else {
             res.status(401).json({message: 'Invalide email or password'});
         }
     }catch (error){
         next(error);
+        console.log("Error occured");
     }
 };
 

@@ -61,6 +61,6 @@ const entrySchema = new mongoose.Schema({
 
 
 //text indexes for each search
-entrySchema.index({title: 'text', content: 'text', tages:'text'});
+entrySchema.index({title: 'text', content: 'text', tags:'text'});
 
 module.exports = mongoose.model('Entry', entrySchema);

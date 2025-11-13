@@ -18,6 +18,6 @@ router.post('/upload', protect, upload.fields([
   { name: 'videos', maxCount: 2 }
 ]), uploadMedia);
 router.post('/profile-picture', protect, upload.single('profilePicture'), uploadProfilePicture);
-router.delete('/:publicId', protect, deleteMedia);
+router.delete('/delete', protect, deleteMedia);
 
 module.exports = router;
