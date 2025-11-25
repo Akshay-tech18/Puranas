@@ -134,6 +134,7 @@ app.use('/api/family', require('./routes/familyRoutes'));
 app.use('/api/search', require('./routes/searchRoutes'));
 app.use('/api/media', require('./routes/mediaRoutes'));
 app.use('/api/upload', require('./routes/uploadRoutes'));
+app.use('/api/chat', require('./routes/chatRoutes'));
 
 app.get('/', (req, res) => {
   res.json({

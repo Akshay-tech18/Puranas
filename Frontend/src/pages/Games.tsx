@@ -50,7 +50,20 @@ const Games = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button className="w-full">Play Card Game</Button>
+                    <Button
+                          className="w-full"
+                          onClick={() => window.location.href = "/memory-game.html"}
+                    >
+                      Play Card Game
+                    </Button>
+                    </CardContent>
+                    <CardContent>
+                    <Button
+                          className="w-full"
+                          onClick={() => window.location.href = "/memory-game1.html"}
+                    >
+                      Play Card Game 2
+                    </Button>
                   </CardContent>
                 </Card>
 

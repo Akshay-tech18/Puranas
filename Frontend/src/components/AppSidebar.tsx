@@ -19,6 +19,7 @@ const items = [
   { title: "Search", url: "/search", icon: Search },
   { title: "Games", url: "/games", icon: Gamepad2 },
   { title: "Cultural Guide", url: "/chatbot", icon: MessageSquare },
+  { title: "Family Group", url: "/family", icon: Users },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 

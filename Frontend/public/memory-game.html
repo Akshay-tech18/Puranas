@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Festival Memory Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #f0e68c;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .info-item {
+            color: #fff;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .info-item span {
+            color: #ffd700;
+            font-size: 1.3em;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+            perspective: 1000px;
+        }
+
+        .card {
+            aspect-ratio: 3/4;
+            position: relative;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card.matched {
+            opacity: 0.7;
+            cursor: default;
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            transform: rotateY(180deg);
+            padding: 20px;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: 3px solid #fff;
+        }
+
+        .card-back::before {
+            content: '🪔';
+            font-size: 2.5em;
+        }
+
+        .reset-btn {
+            display: block;
+            margin: 0 auto;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+
+        .reset-btn:active {
+            transform: translateY(0);
+        }
+
+        .story-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .story-modal.active {
+            display: flex;
+        }
+
+        .story-content {
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            position: relative;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .story-icon {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .story-title {
+            color: #764ba2;
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #f5576c;
+            padding-bottom: 10px;
+        }
+
+        .story-text {
+            color: #333;
+            line-height: 1.8;
+            font-size: 1.1em;
+            text-align: justify;
+        }
+
+        .close-story {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #f5576c;
+            color: #fff;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .close-story:hover {
+            transform: rotate(90deg);
+        }
+
+        .win-message {
+            display: none;
+            text-align: center;
+            background: rgba(255,255,255,0.95);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .win-message.active {
+            display: block;
+            animation: bounce 0.6s ease-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .win-message h2 {
+            color: #764ba2;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .win-message p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 768px) {
+            .game-board {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .card-face {
+                font-size: 2em;
+            }
+
+            .story-content {
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-board {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🪔 Indian Festival Memory Game 🪔</h1>
+        <p class="subtitle">Match the pairs to learn beautiful festival stories!</p>
+        
+        <div class="game-info">
+            <div class="info-item">Moves: <span id="moves">0</span></div>
+            <div class="info-item">Matches: <span id="matches">0</span>/8</div>
+            <div class="info-item">Time: <span id="time">0:00</span></div>
+        </div>
+
+        <div class="win-message" id="winMessage">
+            <h2>🎉 Congratulations! 🎉</h2>
+            <p>You've discovered all the festival stories!</p>
+        </div>
+
+        <div class="game-board" id="gameBoard"></div>
+        
+        <button class="reset-btn" onclick="resetGame()">New Game</button>
+    </div>
+
+    <div class="story-modal" id="storyModal">
+        <div class="story-content">
+            <button class="close-story" onclick="closeStory()">×</button>
+            <div class="story-icon" id="storyIcon"></div>
+            <h2 class="story-title" id="storyTitle"></h2>
+            <p class="story-text" id="storyText"></p>
+        </div>
+    </div>
+
+    <script>
+        const festivals = [
+            {
+                icon: '🪔',
+                name: 'Diwali',
+                story: 'Diwali, the Festival of Lights, celebrates the return of Lord Rama to Ayodhya after 14 years of exile and his victory over the demon king Ravana. The people of Ayodhya lit thousands of oil lamps to welcome their beloved king home, illuminating the entire kingdom. Today, we light diyas and candles to symbolize the victory of light over darkness, good over evil, and knowledge over ignorance. Families gather to share sweets, exchange gifts, and create beautiful rangoli patterns at their doorsteps.'
+            },
+            {
+                icon: '🎨',
+                name: 'Holi',
+                story: 'Holi celebrates the divine love of Radha and Krishna, and the victory of good over evil through the story of Prahlad and Holika. Young Krishna, with his dark blue skin, was jealous of Radha\'s fair complexion. His mother Yashoda playfully suggested he color Radha\'s face, and thus began the tradition of playing with colors. On this joyous day, people forget their differences, forgive old grudges, and celebrate with vibrant colors, music, and dance, spreading love and happiness.'
+            },
+            {
+                icon: '🎭',
+                name: 'Navratri',
+                story: 'Navratri honors the nine forms of Goddess Durga over nine nights of devotion and dance. The festival commemorates Durga\'s victory over the buffalo demon Mahishasura after a fierce battle lasting nine days and nights. Each night represents the triumph of different aspects of the divine feminine. People perform Garba and Dandiya dances in colorful traditional attire, fasting during the day and celebrating with energy and devotion at night, showcasing the power of good over evil.'
+            },
+            {
+                icon: '🌾',
+                name: 'Pongal',
+                story: 'Pongal is a harvest festival celebrated in Tamil Nadu to thank the Sun God for a bountiful harvest. The word "Pongal" means "to boil over," referring to the traditional dish of sweet rice cooked in milk until it overflows, symbolizing abundance and prosperity. Farmers express gratitude to the cattle who help them till the land, decorating them with bells and garlands. Homes are decorated with kolam designs, and families gather to prepare the festive meal in earthen pots outdoors.'
+            },
+            {
+                icon: '🐘',
+                name: 'Ganesh Chaturthi',
+                story: 'Ganesh Chaturthi celebrates the birth of Lord Ganesha, the elephant-headed god of wisdom and prosperity. According to legend, Goddess Parvati created Ganesha from sandalwood paste to guard her while she bathed. When Lord Shiva returned and was stopped by young Ganesha, a battle ensued, and Ganesha lost his head. To console Parvati, Shiva replaced it with an elephant\'s head. During this festival, beautifully crafted clay idols of Ganesha are worshipped in homes and public pandals for 10 days before being immersed in water.'
+            },
+            {
+                icon: '🎆',
+                name: 'Dussehra',
+                story: 'Dussehra celebrates Lord Rama\'s victory over the ten-headed demon king Ravana, who had kidnapped Rama\'s wife Sita. After a great battle described in the epic Ramayana, Rama, with the help of his brother Lakshmana and the monkey army led by Hanuman, defeated Ravana. The festival symbolizes the triumph of righteousness over evil. Giant effigies of Ravana, his brother Kumbhakarna, and son Meghanada are burned in public spaces, accompanied by fireworks and celebrations.'
+            },
+            {
+                icon: '🌙',
+                name: 'Eid',
+                story: 'Eid al-Fitr marks the end of Ramadan, the holy month of fasting observed by Muslims worldwide. It celebrates spiritual renewal, self-discipline, and compassion for the less fortunate. Families wake up early, dress in new clothes, and attend special prayers at the mosque. They exchange gifts, prepare special dishes like sevaiyan (vermicelli), and share food with neighbors and the poor. Children receive Eidi (money gifts) from elders, and the day is filled with joy, forgiveness, and community spirit.'
+            },
+            {
+                icon: '🎋',
+                name: 'Onam',
+                story: 'Onam is Kerala\'s harvest festival celebrating the annual visit of the legendary King Mahabali, a generous and just ruler loved by his people. When the gods grew jealous of his popularity, Lord Vishnu took the form of a dwarf Brahmin and tricked Mahabali into giving up his kingdom. Impressed by the king\'s sacrifice, Vishnu granted him permission to visit his people once a year. Keralites welcome him with flower carpets called Pookalam, grand feasts called Onasadya, and traditional boat races.'
+            }
+        ];
+
+        let cards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let moves = 0;
+        let gameStarted = false;
+        let startTime;
+        let timerInterval;
+
+        function initGame() {
+            const gameBoard = document.getElementById('gameBoard');
+            gameBoard.innerHTML = '';
+            
+            cards = [...festivals, ...festivals]
+                .sort(() => Math.random() - 0.5)
+                .map((festival, index) => ({
+                    ...festival,
+                    id: index,
+                    matched: false
+                }));
+
+            cards.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card';
+                cardElement.dataset.id = card.id;
+                cardElement.innerHTML = `
+                    <div class="card-face card-front">${card.icon}</div>
+                    <div class="card-face card-back"></div>
+                `;
+                cardElement.addEventListener('click', () => flipCard(card.id));
+                gameBoard.appendChild(cardElement);
+            });
+
+            matchedPairs = 0;
+            moves = 0;
+            flippedCards = [];
+            gameStarted = false;
+            document.getElementById('moves').textContent = '0';
+            document.getElementById('matches').textContent = '0/8';
+            document.getElementById('time').textContent = '0:00';
+            document.getElementById('winMessage').classList.remove('active');
+            clearInterval(timerInterval);
+        }
+
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                document.getElementById('time').textContent = 
+                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function flipCard(id) {
+            if (!gameStarted) {
+                gameStarted = true;
+                startTimer();
+            }
+
+            if (flippedCards.length === 2) return;
+            
+            const card = cards.find(c => c.id === id);
+            if (card.matched || flippedCards.includes(id)) return;
+
+            const cardElement = document.querySelector(`[data-id="${id}"]`);
+            cardElement.classList.add('flipped');
+            flippedCards.push(id);
+
+            if (flippedCards.length === 2) {
+                moves++;
+                document.getElementById('moves').textContent = moves;
+                setTimeout(checkMatch, 800);
+            }
+        }
+
+        function checkMatch() {
+            const [id1, id2] = flippedCards;
+            const card1 = cards.find(c => c.id === id1);
+            const card2 = cards.find(c => c.id === id2);
+
+            if (card1.name === card2.name) {
+                card1.matched = true;
+                card2.matched = true;
+                document.querySelector(`[data-id="${id1}"]`).classList.add('matched');
+                document.querySelector(`[data-id="${id2}"]`).classList.add('matched');
+                
+                matchedPairs++;
+                document.getElementById('matches').textContent = `${matchedPairs}/8`;
+                
+                setTimeout(() => showStory(card1), 500);
+                
+                if (matchedPairs === 8) {
+                    clearInterval(timerInterval);
+                    setTimeout(() => {
+                        document.getElementById('winMessage').classList.add('active');
+                    }, 1000);
+                }
+            } else {
+                document.querySelector(`[data-id="${id1}"]`).classList.remove('flipped');
+                document.querySelector(`[data-id="${id2}"]`).classList.remove('flipped');
+            }
+
+            flippedCards = [];
+        }
+
+        function showStory(festival) {
+            document.getElementById('storyIcon').textContent = festival.icon;
+            document.getElementById('storyTitle').textContent = festival.name;
+            document.getElementById('storyText').textContent = festival.story;
+            document.getElementById('storyModal').classList.add('active');
+        }
+
+        function closeStory() {
+            document.getElementById('storyModal').classList.remove('active');
+        }
+
+        function resetGame() {
+            clearInterval(timerInterval);
+            initGame();
+        }
+
+        // Initialize game on load
+        initGame();
+    </script>
+</body>
+</html>

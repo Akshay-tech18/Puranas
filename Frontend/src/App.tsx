@@ -18,6 +18,8 @@ import Chatbot from "./pages/Chatbot";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import Family from "./pages/Family";
+
 
 const queryClient = new QueryClient();
 
@@ -43,6 +45,7 @@ const App = () => (
           <Route path="/settings" element={<Settings />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
+          <Route path="/family" element={<Family />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

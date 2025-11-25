@@ -876,7 +876,7 @@ const CreateEntry = () => {
                     />
                   </div>
 
-                  {/* Images */}
+                  {/* Images
                   <div className="space-y-2">
                     <Label>Images</Label>
                     <div className="flex items-center gap-2">
@@ -925,7 +925,63 @@ const CreateEntry = () => {
                         ))}
                       </div>
                     )}
-                  </div>
+                  </div> */}
+                  {/* Images */}
+<div className="space-y-2">
+  <Label>Images</Label>
+  <div className="flex items-center gap-2">
+    <Input
+      type="file"
+      accept="image/*"
+      multiple
+      id="image-upload"
+      className="hidden"
+      onChange={handleImageUpload}
+    />
+    <Button
+      type="button"
+      variant="outline"
+      onClick={() =>
+        document.getElementById("image-upload")?.click()
+      }
+    >
+      <ImageIcon className="mr-2 h-4 w-4" /> Upload Images
+    </Button>
+  </div>
+
+  {images.length > 0 && (
+    <div className="grid grid-cols-3 gap-2 mt-2">
+      {images.map((img, idx) => {
+        // 👉 FIXED: correct preview for all types
+        const imgSrc = img.startsWith("data:image")
+          ? img
+          : img.startsWith("http")
+          ? img
+          : `${BASE_URL}${img}`;
+
+        return (
+          <div key={idx} className="relative group">
+            <img
+              src={imgSrc}
+              alt={`Upload ${idx + 1}`}
+              className="w-full h-24 object-cover rounded"
+            />
+            <Button
+              type="button"
+              variant="destructive"
+              size="icon"
+              className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+              onClick={() => removeImage(idx)}
+            >
+              <X className="h-3 w-3" />
+            </Button>
+          </div>
+        );
+      })}
+    </div>
+  )}
+</div>
+
 
                   {/* Audio */}
                   <div className="space-y-2">

@@ -39,9 +39,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'https://via.placeholder.com/150',
     },
-    familyGroups: [{
+    familyGroup: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'FamilyGroup',
+        default:null,
     }],
 },{
     timestamps: true,
